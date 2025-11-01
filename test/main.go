@@ -6,8 +6,20 @@ import (
 	"time"
 )
 
+type User struct {
+	Test string `json:"h"`
+}
+
 func greet(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World! %s", time.Now())
+	fmt.Fprintf(w, "Hello World! %s", "")
+	timeRenamed := time.Now()
+	fmt.Printf("%s", timeRenamed)
+	
+	user := User{
+		Test: "Hunter",	
+	}
+
+	user.Test = "hello"
 }
 
 func main() {
