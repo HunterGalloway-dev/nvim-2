@@ -3,27 +3,29 @@ require("nvchad.configs.lspconfig").defaults()
 
 -- Configure gopls (Neovim 0.11+ LSP config API)
 vim.lsp.config["gopls"] = {
-  settings = {
-    gopls = {
-      gofumpt = true,
-      staticcheck = true,
-      usePlaceholders = true,
-      analyses = {
-        unusedparams = true,
-        shadow = true,
-        unreachable = true,
-      },
-      hints = {
-        assignVariableTypes = true,
-        compositeLiteralFields = true,
-        compositeLiteralTypes = true,
-        constantValues = true,
-        functionTypeParameters = true,
-        parameterNames = true,
-        rangeVariableTypes = true,
-      },
+    cmd = { "gopls" },
+    filetypes = { "go", "gomod", "gotmpl", "gowork" },
+    settings = {
+        gopls = {
+            gofumpt = true,
+            staticcheck = true,
+            usePlaceholders = true,
+            analyses = {
+                unusedparams = true,
+                shadow = true,
+                unreachable = true,
+            },
+            hints = {
+                assignVariableTypes = true,
+                compositeLiteralFields = true,
+                compositeLiteralTypes = true,
+                constantValues = true,
+                functionTypeParameters = true,
+                parameterNames = true,
+                rangeVariableTypes = true,
+            },
+        },
     },
-  },
 }
 
 -- Enable the servers you want
