@@ -10,6 +10,10 @@ type User struct {
 	Test string `json:"h"`
 }
 
+type Person struct {
+	Age int
+}
+
 func greet(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello World! %s", "")
 	timeRenamed := time.Now()

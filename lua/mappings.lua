@@ -8,3 +8,11 @@ map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
 
 map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "LSP Code Action" })
+
+
+local term = require("nvchad.term")
+
+map({ "n", "t" }, "<leader>tf", function()
+  term.toggle({ pos = "float", id = "floatTerm" })
+end, { desc = "Toggle floating terminal" })
+
