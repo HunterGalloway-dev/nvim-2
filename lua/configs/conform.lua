@@ -10,6 +10,19 @@ local options = {
         json = { "prettier" },
         yaml = { "prettier" },
     },
+    formatters = {
+        prettier = {
+            args = {
+                "--stdin-filepath",
+                "$FILENAME",
+                "--tab-width",
+                "4",
+                "--use-tabs",
+                "false",
+            },
+            stdin = true,
+        },
+    },
 
     -- Apply format-on-save globally
     format_on_save = function()

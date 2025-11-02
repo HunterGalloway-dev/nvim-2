@@ -5,6 +5,9 @@ return {
             ensure_installed = {
                 "gopls",
                 "prettier",
+                "json-lsp",
+                "yamlls",
+                -- "schemastore"
             },
         },
     },
@@ -21,7 +24,9 @@ return {
             require "configs.lspconfig"
         end,
     },
-
+    {
+        "b0o/schemastore.nvim",
+    },
     -- test new blink
     -- { import = "nvchad.blink.lazyspec" },
     {
