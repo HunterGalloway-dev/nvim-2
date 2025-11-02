@@ -21,6 +21,11 @@ func main() {
 		fmt.Println("This user is active")
 	}
 
+	err := sampleError()
+	if err != nil {
+		fmt.Printf("handling error: %s", err)
+	}
+
 	fmt.Println("hello world")
 	val := doStuff()
 
@@ -33,4 +38,8 @@ func doStuff() int {
 
 	z := x + y
 	return z
+}
+
+func sampleError() error {
+	return fmt.Errorf("i am example error")
 }
