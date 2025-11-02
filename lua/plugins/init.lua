@@ -63,9 +63,31 @@ return {
     },
     {
         "mfussenegger/nvim-dap",
+        dependencies = {
+            "rcarriga/nvim-dap-ui",
+            "nvim-neotest/nvim-nio", -- Required for nvim-dap-ui
+        },
+        config = function()
+            require("dapui").setup()
+            -- Further nvim-dap configuration can go here
+        end,
     },
     {
-        "rcarriga/nvim-dap-ui",
+        "leoluz/nvim-dap-go",
+    },
+    -- Mason integration for DAP adapters
+    {
+        "jay-babu/mason-nvim-dap.nvim",
+        dependencies = {
+            "williamboman/mason.nvim",
+            "mfussenegger/nvim-dap",
+        },
+        config = function()
+            require("mason-nvim-dap").setup {
+                -- Optional: automatically install adapters
+                ensure_installed = { "python", "delve" },
+            }
+        end,
     },
     {
         "ray-x/go.nvim",
