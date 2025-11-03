@@ -21,4 +21,4 @@ map("n", "<leader>gbt", "<cmd>GoAddTag bson<CR>", { desc = "Go: add bson tags to
 map("n", "<leader>gjr", "<cmd>GoRmTag json<CR>", { desc = "Go: remove json tags from a struct" })
 map("n", "<leader>gbr", "<cmd>GoRmTag bson<CR>", { desc = "Go: remove json tags from a struct" })
 map("n", "<leader>gdd", "<cmd>GoDebug<CR>", { desc = "Go: launch go dap debugger" })
-map("n", "<leader>gdb", "<cmd>GoDebug -b<CR>", { desc = "Go: toggle break point" })
+map("n", "<leader>gdb", "<cmd>GoBreakToggle<CR>", { desc = "Go: toggle break point" })

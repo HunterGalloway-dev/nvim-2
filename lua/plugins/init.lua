@@ -96,6 +96,7 @@ return {
         end,
     },
     {
+        -- https://github.com/ray-x/go.nvim
         "ray-x/go.nvim",
         dependencies = { -- optional packages
             "ray-x/guihua.lua",
@@ -104,10 +105,21 @@ return {
         },
         opts = {
             -- lsp_keymaps = false,
-            -- other options
+            lsp_inlay_hints = {
+                enable = false, -- this is the only field apply to neovim > 0.10
+            },
+            -- icons = { breakpoint = "🅱️", currentpos = "🏃" },
         },
         event = { "CmdlineEnter" },
         ft = { "go", "gomod" },
         build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
     },
+    -- {
+    --     "nvim-tree/nvim-tree.lua",
+    --     opts = {
+    --         view = {
+    --             side = "right"
+    --         }
+    --     }
+    -- }
 }
