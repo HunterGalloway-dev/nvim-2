@@ -106,6 +106,27 @@ vim.lsp.config["eslint"] = {
     },
 }
 
+-- Dockerfile LSP
+vim.lsp.config["dockerls"] = {
+    -- defaults are fine; attaches to filetype "dockerfile"
+}
+
+-- docker-compose LSP
+vim.lsp.config["docker_compose_language_service"] = {
+    -- attaches to compose YAML files (docker-compose.yml/.yaml)
+}
+
 -- Enable all LSP servers
-local servers = { "gopls", "jsonls", "bashls", "yamlls", "html", "cssls", "ts_ls", "eslint" }
+local servers = {
+    "gopls",
+    "jsonls",
+    "bashls",
+    "yamlls",
+    "ts_ls",
+    "eslint",
+    "html",
+    "cssls",
+    "dockerls",
+    "docker_compose_language_service",
+}
 vim.lsp.enable(servers)
