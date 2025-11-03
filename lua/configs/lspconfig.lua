@@ -65,6 +65,47 @@ vim.lsp.config["bashls"] = {
     -- },
 }
 
+vim.lsp.config["ts_ls"] = {
+    cmd = { "typescript-language-server", "--stdio" },
+    filetypes = {
+        "javascript",
+        "javascriptreact",
+        "javascript.jsx",
+        "typescript",
+        "typescriptreact",
+        "typescript.tsx",
+    },
+    on_attach = function(client)
+        -- let Prettier handle formatting
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
+    end,
+    single_file_support = true,
+}
+
+-- ESLint LSP (diagnostics only; keep Prettier for formatting)
+vim.lsp.config["eslint"] = {
+    cmd = { "vscode-eslint-language-server", "--stdio" },
+    filetypes = {
+        "javascript",
+        "javascriptreact",
+        "javascript.jsx",
+        "typescript",
+        "typescriptreact",
+        "typescript.tsx",
+    },
+    -- do NOT let ESLint format; we use Prettier via Conform
+    on_attach = function(client)
+        client.server_capabilities.documentFormattingProvider = false
+        client.server_capabilities.documentRangeFormattingProvider = false
+    end,
+    settings = {
+        -- Run on the same files we listed above
+        validate = "on",
+        workingDirectory = { mode = "auto" },
+    },
+}
+
 -- Enable all LSP servers
-local servers = { "gopls", "jsonls", "bashls", "yamlls", "html", "cssls" }
+local servers = { "gopls", "jsonls", "bashls", "yamlls", "html", "cssls", "ts_ls", "eslint" }
 vim.lsp.enable(servers)
