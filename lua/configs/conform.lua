@@ -9,6 +9,7 @@ local options = {
         -- html = { "prettier" },
         json = { "prettier" },
         yaml = { "prettier" },
+        sh = { "shfmt" },
     },
     formatters = {
         prettier = {
@@ -21,6 +22,12 @@ local options = {
                 "false",
             },
             stdin = true,
+        },
+        shfmt = {
+            -- -i 4 = indent 4 spaces
+            -- -ci = indent switch-case
+            -- -sr = redirect follows style
+            prepend_args = { "-i", "4", "-ci", "-sr" },
         },
     },
 

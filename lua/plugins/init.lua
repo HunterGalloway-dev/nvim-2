@@ -7,7 +7,9 @@ return {
                 "prettier",
                 "json-lsp",
                 "yamlls",
-                -- "schemastore"
+                "bash-language-server",
+                "shfmt",
+                "shellcheck",
             },
         },
     },
@@ -43,6 +45,7 @@ return {
                 "gowork",
                 "gotmpl",
                 "json",
+                "bash",
             },
         },
     },
