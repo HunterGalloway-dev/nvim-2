@@ -10,6 +10,7 @@ vim.lsp.config["gopls"] = {
             gofumpt = true,
             staticcheck = true,
             -- usePlaceholders = true,
+            hoverKind = "FullDocumentation",
             analyses = {
                 unusedparams = true,
                 shadow = true,
