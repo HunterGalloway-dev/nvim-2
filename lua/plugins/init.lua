@@ -183,12 +183,49 @@ return {
             virtual_text_column = 1, -- virtual text start column, check Start virtual text at column section for more options
         },
     },
-    -- {
-    --     "nvim-tree/nvim-tree.lua",
-    --     opts = {
-    --         view = {
-    --             side = "right"
-    --         }
-    --     }
-    -- }
+    {
+        "nvim-telescope/telescope.nvim",
+        opts = function(_, conf)
+            -- Ensure defaults and pickers exist
+            conf.defaults = conf.defaults or {}
+            conf.pickers = conf.pickers or {}
+
+            -- File ignore patterns for better performance
+            conf.defaults.file_ignore_patterns = {
+                ".git/",
+                "vendor/",
+                "node_modules/",
+                "dist/",
+                "build/",
+                "tmp/",
+                "telemetry/",
+                "raw_data/",
+                "__pycache__/",
+                "%.log",
+                "%.out",
+                "%.test",
+                "%.exe",
+                "%.dll",
+                "%.so",
+                "%.db",
+                "%.sqlite",
+                ".DS_Store",
+            }
+
+            -- Finder behavior
+            conf.pickers.find_files = {
+                hidden = true, -- show hidden files (like .env, .nvim)
+                no_ignore = false, -- respect .gitignore
+                follow = true, -- follow symlinks
+            }
+
+            -- Optional: layout improvements for widescreen monitors
+            conf.defaults.layout_config = {
+                horizontal = { preview_width = 0.55 },
+                vertical = { preview_height = 0.5 },
+            }
+
+            return conf
+        end,
+    },
 }
