@@ -22,3 +22,6 @@ map("n", "<leader>gjr", "<cmd>GoRmTag json<CR>", { desc = "Go: remove json tags 
 map("n", "<leader>gbr", "<cmd>GoRmTag bson<CR>", { desc = "Go: remove json tags from a struct" })
 map("n", "<leader>gdd", "<cmd>GoDebug<CR>", { desc = "Go: launch go dap debugger" })
 map("n", "<leader>gdb", "<cmd>GoBreakToggle<CR>", { desc = "Go: toggle break point" })
+-- Ray X Go Testing Mappings
+map("n", "<leader>tgb", "<cmd>GoTestFile -v<CR>", { desc = "Go: Go Test File (Current Buffer)" })
+map("n", "<leader>tgf", "<cmd>GoTestFunc -v<CR>", { desc = "Go: Test Function" })
