@@ -94,12 +94,69 @@ return {
             "nvim-neotest/nvim-nio", -- Required for nvim-dap-ui
         },
         config = function()
-            require("dapui").setup()
-            -- Further nvim-dap configuration can go here
+            local dap = require "dap"
+            local dapui = require "dapui"
+
+            -- Custom DAP UI layout with only console, breakpoints, and scopes (local variables)
+            dapui.setup {
+                layouts = {
+                    {
+                        -- Left sidebar: local variables and breakpoints
+                        elements = {
+                            { id = "scopes", size = 0.80 }, -- Local variables (60% of left panel)
+                            { id = "breakpoints", size = 0.20 }, -- Breakpoints (40% of left panel)
+                        },
+                        size = 50, -- Width of left sidebar in columns
+                        position = "left",
+                    },
+                    {
+                        -- Bottom panel: console spanning full width
+                        elements = {
+                            { id = "console", size = 1.0 }, -- Console takes full bottom panel
+                        },
+                        size = 10, -- Height of bottom panel in rows
+                        position = "bottom",
+                    },
+                },
+                controls = {
+                    enabled = true,
+                    element = "console",
+                },
+                floating = {
+                    max_height = nil,
+                    max_width = nil,
+                    border = "rounded",
+                    mappings = {
+                        close = { "q", "<Esc>" },
+                    },
+                },
+                windows = { indent = 1 },
+                render = {
+                    max_type_length = nil,
+                    max_value_lines = 100,
+                },
+            }
+
+            -- Automatically open/close DAP UI when debugging starts/ends
+            dap.listeners.after.event_initialized["dapui_config"] = function()
+                dapui.open()
+            end
+            dap.listeners.before.event_terminated["dapui_config"] = function()
+                dapui.close()
+            end
+            dap.listeners.before.event_exited["dapui_config"] = function()
+                dapui.close()
+            end
         end,
     },
     {
         "leoluz/nvim-dap-go",
+        dependencies = {
+            "mfussenegger/nvim-dap",
+        },
+        config = function()
+            require("dap-go").setup()
+        end,
     },
     -- Mason integration for DAP adapters
     {
@@ -110,29 +167,28 @@ return {
         },
         config = function()
             require("mason-nvim-dap").setup {
-                -- Optional: automatically install adapters
                 ensure_installed = { "python", "delve" },
             }
         end,
     },
     {
-        -- https://github.com/ray-x/go.nvim
         "ray-x/go.nvim",
-        dependencies = { -- optional packages
+        dependencies = {
             "ray-x/guihua.lua",
             "neovim/nvim-lspconfig",
             "nvim-treesitter/nvim-treesitter",
         },
         opts = {
-            -- lsp_keymaps = false,
             lsp_inlay_hints = {
-                enable = false, -- this is the only field apply to neovim > 0.10
+                enable = false,
             },
-            -- icons = { breakpoint = "🅱️", currentpos = "🏃" },
+            -- Disable ray-x/go.nvim's DAP UI to prevent conflicts
+            dap_debug = true,
+            dap_debug_gui = false, -- This prevents go.nvim from setting up its own DAP UI
         },
         event = { "CmdlineEnter" },
         ft = { "go", "gomod" },
-        build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+        build = ':lua require("go.install").update_all_sync()',
     },
 
     {
