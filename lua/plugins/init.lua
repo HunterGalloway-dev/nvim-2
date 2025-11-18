@@ -271,7 +271,7 @@ return {
             -- Finder behavior
             conf.pickers.find_files = {
                 hidden = true, -- show hidden files (like .env, .nvim)
-                no_ignore = false, -- respect .gitignore
+                no_ignore = true, -- respect .gitignore
                 follow = true, -- follow symlinks
             }
 
