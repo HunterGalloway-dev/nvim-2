@@ -342,41 +342,6 @@ return {
         end,
     },
 
-    -- Database client: supports MongoDB, PostgreSQL, MySQL, SQLite and more
-    -- Usage: <leader>db to open the UI, then connect via a connection string
-    {
-        "tpope/vim-dadbod",
-        lazy = true,
-    },
-    {
-        "kristijanhusak/vim-dadbod-ui",
-        dependencies = { "tpope/vim-dadbod" },
-        cmd = { "DBUI", "DBUIToggle", "DBUIAddConnection", "DBUIFindBuffer" },
-        init = function()
-            vim.g.db_ui_use_nerd_fonts = 1
-            vim.g.db_ui_save_location = vim.fn.stdpath "data" .. "/db_ui"
-        end,
-    },
-    {
-        "kristijanhusak/vim-dadbod-completion",
-        dependencies = { "tpope/vim-dadbod" },
-        ft = { "sql", "mysql", "plsql" },
-        config = function()
-            -- Hook dadbod completions into nvim-cmp for SQL buffers
-            vim.api.nvim_create_autocmd("FileType", {
-                pattern = { "sql", "mysql", "plsql" },
-                callback = function()
-                    require("cmp").setup.buffer {
-                        sources = {
-                            { name = "vim-dadbod-completion" },
-                            { name = "buffer" },
-                        },
-                    }
-                end,
-            })
-        end,
-    },
-
     -- Workspace diagnostics panel — surfaces LSP errors/warnings across all open files
     {
         "folke/trouble.nvim",
@@ -386,17 +351,6 @@ return {
             modes = {
                 diagnostics = { auto_close = true },
             },
-        },
-    },
-
-    -- HTTP client: run requests from .http files — useful for testing microservice APIs
-    {
-        "mistweaverco/kulala.nvim",
-        ft = "http",
-        opts = {
-            default_view = "body",
-            default_env = "dev",
-            debug = false,
         },
     },
 }

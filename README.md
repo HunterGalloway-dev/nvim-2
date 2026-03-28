@@ -40,15 +40,7 @@ Emmet is available for JSX and HTML files for tag expansion.
 
 ### SQL
 
-sqls provides completions and basic intelligence for SQL files. sql-formatter runs on save with uppercase keywords and 4-space indentation. For executing queries directly against live databases, vim-dadbod provides a UI that supports MongoDB, PostgreSQL, MySQL, and SQLite connections.
-
-| Key | Action |
-|---|---|
-| `<leader>db` | Toggle database UI |
-| `<leader>da` | Add a new connection |
-| `<leader>df` | Find an existing DB buffer |
-
-Connections are stored locally and persist across sessions. Connect using a standard connection string (e.g. `mongodb://localhost:27017/mydb` or `postgresql://user:pass@host/db`).
+sqls provides completions and basic intelligence for SQL files. sql-formatter runs on save with uppercase keywords and 4-space indentation.
 
 ### Kubernetes and Helm
 
@@ -79,19 +71,6 @@ Filetype detection covers `.star` files as well as standard Bazel filenames (BUI
 JSON files get schema validation through jsonls with the full schemastore catalog. Files that allow comments (tsconfig.json, .eslintrc.json, devcontainer.json, VSCode workspace files) are detected as `jsonc` and handled accordingly. Biome formats JSON in Biome projects, Prettier otherwise.
 
 YAML validation uses schemastore automatically. Prettier handles YAML formatting.
-
----
-
-## HTTP API Testing
-
-Kulala lets you write and run HTTP requests from `.http` files directly in the editor. Useful for testing microservice endpoints without switching to a separate tool.
-
-| Key | Action |
-|---|---|
-| `<leader>hr` | Run the request under the cursor |
-| `<leader>hn` | Jump to next request in file |
-| `<leader>hp` | Jump to previous request |
-| `<leader>hi` | Inspect the request |
 
 ---
 

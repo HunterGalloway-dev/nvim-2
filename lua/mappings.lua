@@ -36,13 +36,3 @@ map("n", "<leader>xs", "<cmd>Trouble symbols toggle<cr>", { desc = "Symbols (Tro
 map("n", "<leader>xl", "<cmd>Trouble loclist toggle<cr>", { desc = "Location list (Trouble)" })
 map("n", "<leader>xq", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix list (Trouble)" })
 
--- Database UI (vim-dadbod) — connect to MongoDB, PostgreSQL, MySQL, SQLite, etc.
-map("n", "<leader>db", "<cmd>DBUIToggle<cr>", { desc = "Toggle DB UI" })
-map("n", "<leader>da", "<cmd>DBUIAddConnection<cr>", { desc = "Add DB connection" })
-map("n", "<leader>df", "<cmd>DBUIFindBuffer<cr>", { desc = "Find DB buffer" })
-
--- HTTP client (Kulala) — run requests from .http files to test API endpoints
-map("n", "<leader>hr", function() require("kulala").run() end, { desc = "HTTP: Run request" })
-map("n", "<leader>hn", function() require("kulala").jump_next() end, { desc = "HTTP: Next request" })
-map("n", "<leader>hp", function() require("kulala").jump_prev() end, { desc = "HTTP: Prev request" })
-map("n", "<leader>hi", function() require("kulala").inspect() end, { desc = "HTTP: Inspect request" })
