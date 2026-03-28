@@ -1,28 +1,50 @@
 return {
     {
         "williamboman/mason.nvim",
+        opts = {},
+    },
+    -- Auto-installs any missing Mason packages on startup (checks once per day)
+    {
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        dependencies = { "williamboman/mason.nvim" },
+        event = "VeryLazy",
         opts = {
             ensure_installed = {
+                -- Go
                 "gopls",
                 "gofumpt",
                 "goimports",
+                -- Web / React (Biome replaces ESLint + Prettier for JS/TS projects)
+                "typescript-language-server",
+                "biome",
+                "html-lsp",
+                "css-lsp",
+                "emmet-language-server",
+                "prettier", -- fallback for HTML/Markdown not covered by Biome
+                -- SQL
+                "sqls",
+                "sql-formatter",
+                -- Kubernetes / Helm
+                "helm-ls",
+                -- Data formats
                 "vscode-json-languageserver",
                 "yaml-language-server",
-                "prettier",
+                -- Shell
                 "bash-language-server",
                 "shfmt",
                 "shellcheck",
-                "typescript-language-server",
-                "eslint-lsp",
-                "html-lsp",
-                "css-lsp",
-                "prettier",
+                -- Docker
                 "dockerfile-language-server",
                 "docker-compose-language-service",
-                "shellcheck",
-                "dockfmt",
+                "hadolint",
+                -- Starlark (ETL transforms via custom Go engine)
+                -- starpls omitted: it's Bazel-specific and would produce false errors
+                -- for custom mounted modules (json, etc.)
+                "buildifier",
             },
-            automatic_installation = true,
+            run_on_start = true,
+            -- Only re-check once every 24 hours so startup stays fast
+            debounce_hours = 24,
         },
     },
     {
@@ -63,6 +85,10 @@ return {
                 "typescript",
                 "tsx",
                 "dockerfile",
+                -- Added for SQL, Helm, config files, and Starlark
+                "sql",
+                "toml",
+                "starlark",
             },
         },
     },
@@ -284,6 +310,27 @@ return {
             return conf
         end,
     },
+    -- Async linter runner — uses buildifier for Starlark diagnostics,
+    -- complements LSP servers that may not catch all issues
+    {
+        "mfussenegger/nvim-lint",
+        event = { "BufWritePost", "BufReadPost", "InsertLeave" },
+        config = function()
+            local lint = require "lint"
+            lint.linters_by_ft = {
+                starlark = { "buildifier" },
+                bzl = { "buildifier" },
+                sh = { "shellcheck" },
+                dockerfile = { "hadolint" },
+            }
+            vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave", "BufReadPost" }, {
+                callback = function()
+                    lint.try_lint()
+                end,
+            })
+        end,
+    },
+
     {
         "theHamsta/nvim-dap-virtual-text",
         dependencies = {
@@ -293,5 +340,63 @@ return {
         config = function()
             require("nvim-dap-virtual-text").setup()
         end,
+    },
+
+    -- Database client: supports MongoDB, PostgreSQL, MySQL, SQLite and more
+    -- Usage: <leader>db to open the UI, then connect via a connection string
+    {
+        "tpope/vim-dadbod",
+        lazy = true,
+    },
+    {
+        "kristijanhusak/vim-dadbod-ui",
+        dependencies = { "tpope/vim-dadbod" },
+        cmd = { "DBUI", "DBUIToggle", "DBUIAddConnection", "DBUIFindBuffer" },
+        init = function()
+            vim.g.db_ui_use_nerd_fonts = 1
+            vim.g.db_ui_save_location = vim.fn.stdpath "data" .. "/db_ui"
+        end,
+    },
+    {
+        "kristijanhusak/vim-dadbod-completion",
+        dependencies = { "tpope/vim-dadbod" },
+        ft = { "sql", "mysql", "plsql" },
+        config = function()
+            -- Hook dadbod completions into nvim-cmp for SQL buffers
+            vim.api.nvim_create_autocmd("FileType", {
+                pattern = { "sql", "mysql", "plsql" },
+                callback = function()
+                    require("cmp").setup.buffer {
+                        sources = {
+                            { name = "vim-dadbod-completion" },
+                            { name = "buffer" },
+                        },
+                    }
+                end,
+            })
+        end,
+    },
+
+    -- Workspace diagnostics panel — surfaces LSP errors/warnings across all open files
+    {
+        "folke/trouble.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        cmd = "Trouble",
+        opts = {
+            modes = {
+                diagnostics = { auto_close = true },
+            },
+        },
+    },
+
+    -- HTTP client: run requests from .http files — useful for testing microservice APIs
+    {
+        "mistweaverco/kulala.nvim",
+        ft = "http",
+        opts = {
+            default_view = "body",
+            default_env = "dev",
+            debug = false,
+        },
     },
 }

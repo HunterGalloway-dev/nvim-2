@@ -31,6 +31,8 @@ vim.lsp.config["gopls"] = {
 
 -- JSON LSP (vscode-json-languageserver)
 vim.lsp.config["jsonls"] = {
+    -- Attach to both json and jsonc (tsconfig.json, .eslintrc.json, etc.)
+    filetypes = { "json", "jsonc" },
     settings = {
         json = {
             schemas = require("schemastore").json.schemas(),
@@ -77,16 +79,54 @@ vim.lsp.config["ts_ls"] = {
         "typescript.tsx",
     },
     on_attach = function(client)
-        -- let Prettier handle formatting
+        -- Biome handles formatting; ts_ls is for type-checking and intelligence only
         client.server_capabilities.documentFormattingProvider = false
         client.server_capabilities.documentRangeFormattingProvider = false
     end,
     single_file_support = true,
+    settings = {
+        typescript = {
+            inlayHints = {
+                -- Show parameter names for non-obvious call sites
+                includeInlayParameterNameHints = "literals",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                -- Show return types on functions without explicit annotations
+                includeInlayFunctionLikeReturnTypeHints = true,
+                -- Keep variable type hints off — too noisy with React state
+                includeInlayVariableTypeHints = false,
+                includeInlayPropertyDeclarationTypeHints = false,
+                includeInlayEnumMemberValueHints = true,
+            },
+        },
+        javascript = {
+            inlayHints = {
+                includeInlayParameterNameHints = "literals",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayVariableTypeHints = false,
+                includeInlayPropertyDeclarationTypeHints = false,
+                includeInlayEnumMemberValueHints = true,
+            },
+        },
+    },
 }
 
--- ESLint LSP (diagnostics only; keep Prettier for formatting)
-vim.lsp.config["eslint"] = {
-    cmd = { "vscode-eslint-language-server", "--stdio" },
+-- Emmet: fast JSX/HTML tag expansion (e.g. div.container>ul>li*3)
+vim.lsp.config["emmet_language_server"] = {
+    cmd = { "emmet-language-server", "--stdio" },
+    filetypes = {
+        "html",
+        "css",
+        "javascriptreact",
+        "typescriptreact",
+    },
+    single_file_support = true,
+}
+
+-- Biome LSP: linting + formatting for JS/TS/JSX/TSX/JSON/CSS in Biome projects
+-- Activates when biome.json / biome.jsonc is present at the project root
+vim.lsp.config["biome"] = {
+    cmd = { "biome", "lsp-proxy" },
     filetypes = {
         "javascript",
         "javascriptreact",
@@ -94,16 +134,28 @@ vim.lsp.config["eslint"] = {
         "typescript",
         "typescriptreact",
         "typescript.tsx",
+        "json",
+        "jsonc",
+        "css",
     },
-    -- do NOT let ESLint format; we use Prettier via Conform
-    on_attach = function(client)
-        client.server_capabilities.documentFormattingProvider = false
-        client.server_capabilities.documentRangeFormattingProvider = false
-    end,
+    root_markers = { "biome.json", "biome.jsonc" },
+    single_file_support = false,
+}
+
+-- SQL LSP
+vim.lsp.config["sqls"] = {
+    cmd = { "sqls" },
+    filetypes = { "sql", "mysql" },
+}
+
+-- Helm LSP (Kubernetes chart templates)
+vim.lsp.config["helm_ls"] = {
+    cmd = { "helm_ls", "serve" },
+    filetypes = { "helm" },
     settings = {
-        -- Run on the same files we listed above
-        validate = "on",
-        workingDirectory = { mode = "auto" },
+        ["helm-ls"] = {
+            yamlls = { path = "yaml-language-server" },
+        },
     },
 }
 
@@ -124,7 +176,10 @@ local servers = {
     "bashls",
     "yamlls",
     "ts_ls",
-    "eslint",
+    "biome",
+    "emmet_language_server",
+    "sqls",
+    "helm_ls",
     "html",
     "cssls",
     "dockerls",
