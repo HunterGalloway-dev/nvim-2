@@ -1,5 +1,15 @@
 require "nvchad.autocmds"
 
+-- Makefiles require real tabs — override the global expandtab setting
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "make",
+    callback = function()
+        vim.opt_local.expandtab = false
+        vim.opt_local.tabstop = 4
+        vim.opt_local.shiftwidth = 4
+    end,
+})
+
 -- Starlark filetype detection
 -- Neovim detects .bzl natively but not BUILD/WORKSPACE/MODULE files or .star
 vim.filetype.add {

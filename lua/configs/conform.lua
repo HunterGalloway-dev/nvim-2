@@ -36,8 +36,9 @@ local options = {
         sql = { "sql_formatter" },
         mysql = { "sql_formatter" },
 
-        -- Shell
+        -- Shell (sh covers generic scripts, bash covers #!/bin/bash files)
         sh = { "shfmt" },
+        bash = { "shfmt" },
 
         -- Docker (no standalone formatter — falls back to dockerls via lsp_fallback)
         -- dockerfile = {},

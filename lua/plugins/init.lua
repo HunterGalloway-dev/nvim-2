@@ -33,6 +33,7 @@ return {
                 "bash-language-server",
                 "shfmt",
                 "shellcheck",
+                "checkmake",
                 -- Docker
                 "dockerfile-language-server",
                 "docker-compose-language-service",
@@ -85,10 +86,11 @@ return {
                 "typescript",
                 "tsx",
                 "dockerfile",
-                -- Added for SQL, Helm, config files, and Starlark
+                -- Added for SQL, Helm, config files, Starlark, and Makefile
                 "sql",
                 "toml",
                 "starlark",
+                "make",
             },
         },
     },
@@ -321,7 +323,9 @@ return {
                 starlark = { "buildifier" },
                 bzl = { "buildifier" },
                 sh = { "shellcheck" },
+                bash = { "shellcheck" },
                 dockerfile = { "hadolint" },
+                make = { "checkmake" },
             }
             vim.api.nvim_create_autocmd({ "BufWritePost", "InsertLeave", "BufReadPost" }, {
                 callback = function()

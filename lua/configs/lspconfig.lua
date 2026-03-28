@@ -59,13 +59,8 @@ vim.lsp.config["yamlls"] = {
 -- Bash LSP (bash-language-server)
 vim.lsp.config["bashls"] = {
     cmd = { "bash-language-server", "start" },
-    filetypes = { "sh" }, -- covers .sh (and many zsh files detected as 'sh')
-    -- optional:
-    -- settings = {
-    --   bashIde = {
-    --     globPattern = "*/**/*@(.sh|.bash|.inc|.command)"
-    --   },
-    -- },
+    -- 'bash' covers files with #!/bin/bash shebang; 'sh' covers generic shell scripts
+    filetypes = { "sh", "bash" },
 }
 
 vim.lsp.config["ts_ls"] = {
