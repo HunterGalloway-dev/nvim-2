@@ -29,10 +29,24 @@ map("n", "<leader>gds", "<cmd>DapTerminate<CR>", { desc = "Go: stop current debu
 map("n", "<leader>tgb", "<cmd>GoTestFile -v<CR>", { desc = "Go: Go Test File (Current Buffer)" })
 map("n", "<leader>tgf", "<cmd>GoTestFunc -v<CR>", { desc = "Go: Test Function" })
 
--- Diagnostics (Trouble) — workspace-wide error/warning panel
-map("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Workspace diagnostics (Trouble)" })
-map("n", "<leader>xb", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer diagnostics (Trouble)" })
-map("n", "<leader>xs", "<cmd>Trouble symbols toggle<cr>", { desc = "Symbols (Trouble)" })
-map("n", "<leader>xl", "<cmd>Trouble loclist toggle<cr>", { desc = "Location list (Trouble)" })
-map("n", "<leader>xq", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix list (Trouble)" })
+-- Python Debug Mappings
+map("n", "<leader>pdd", function()
+    require("dap-python").test_method()
+end, { desc = "Python: debug current test method" })
+map("n", "<leader>pdc", function()
+    require("dap").continue()
+end, { desc = "Python: start/continue debug" })
+map("n", "<leader>pdb", function()
+    require("dap").toggle_breakpoint()
+end, { desc = "Python: toggle breakpoint" })
+map("n", "<leader>pds", "<cmd>DapTerminate<CR>", { desc = "Python: stop debug session" })
+
+-- Diagnostics (Trouble) — workspace-wide error/warning panel.
+-- Prefix is <leader>X (capital) to avoid clashing with NvChad's <leader>x
+-- "close buffer" mapping, which would otherwise show a which-key popup on slow press.
+map("n", "<leader>Xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Workspace diagnostics (Trouble)" })
+map("n", "<leader>Xb", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", { desc = "Buffer diagnostics (Trouble)" })
+map("n", "<leader>Xs", "<cmd>Trouble symbols toggle<cr>", { desc = "Symbols (Trouble)" })
+map("n", "<leader>Xl", "<cmd>Trouble loclist toggle<cr>", { desc = "Location list (Trouble)" })
+map("n", "<leader>Xq", "<cmd>Trouble qflist toggle<cr>", { desc = "Quickfix list (Trouble)" })
 

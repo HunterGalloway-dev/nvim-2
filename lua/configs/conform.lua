@@ -17,6 +17,9 @@ local options = {
 
         lua = { "stylua" },
 
+        -- Python
+        python = { "ruff_format" },
+
         -- JS/TS/CSS/JSON: biome when biome.json exists, prettier otherwise
         javascript = { "biome", "prettier", stop_after_first = true },
         javascriptreact = { "biome", "prettier", stop_after_first = true },

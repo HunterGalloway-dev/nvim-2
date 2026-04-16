@@ -13,9 +13,6 @@ o.expandtab = true
 o.number = true
 o.relativenumber = true
 
--- Cursor line (optional)
--- o.cursorlineopt = "both"
-
 -- Folding (Treesitter-based)
 o.foldmethod = "expr"
 o.foldexpr = "nvim_treesitter#foldexpr()"
@@ -24,3 +21,4 @@ o.foldlevel = 99           -- Keeps folds open by default
 o.foldlevelstart = 99
 o.foldnestmax = 4          -- Optional: limit how deep folds go
 o.foldminlines = 1         -- Minimum lines for a fold to be created
+

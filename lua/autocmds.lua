@@ -1,5 +1,24 @@
 require "nvchad.autocmds"
 
+-- Enable inlay hints on every LSP attach when the server supports them.
+-- Server-side hint settings live in ~/.config/nvim/lsp/<name>.lua (gopls, vtsls).
+vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client and client:supports_method "textDocument/inlayHint" then
+            vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+        end
+    end,
+})
+
+-- Highlight printf-style format verbs (%s, %d, %w, etc.) inside Go strings
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "go",
+    callback = function()
+        vim.fn.matchadd("@string.escape", "%[-+ #0-9*.]*[vTtbcdoOqxXUeEfFgGspwW%]")
+    end,
+})
+
 -- Makefiles require real tabs — override the global expandtab setting
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "make",

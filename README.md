@@ -6,6 +6,80 @@ Plugin management is handled by lazy.nvim. All language servers, formatters, and
 
 ---
 
+## Prerequisites
+
+These need to be installed on your system before the config will work correctly. Mason handles everything inside Neovim, but it cannot install its own runtime dependencies.
+
+**Required:**
+
+- Neovim 0.11 or later. This config uses `vim.lsp.config` and `vim.lsp.enable` which are 0.11-only APIs. Earlier versions will not work.
+- Git. Required for lazy.nvim to bootstrap itself and download plugins.
+- A C compiler (gcc or clang). Treesitter compiles parsers from source on first install.
+- Node.js 18 or later. A large number of Mason packages are Node-based: the TypeScript LSP, JSON LSP, YAML LSP, HTML LSP, CSS LSP, Dockerfile LSP, Emmet, and others.
+- Go 1.21 or later. Required for gopls, gofumpt, goimports, go.nvim, and Delve.
+- ripgrep. Required for Telescope live grep. Install via `brew install ripgrep` or your system package manager.
+- A Nerd Font installed and set as your terminal font. The UI uses Nerd Font glyphs for file icons and status indicators. Recommended: JetBrainsMono Nerd Font or Meslo Nerd Font.
+
+**Recommended:**
+
+- lazygit. The `<leader>lg` binding opens LazyGit in a floating terminal. Without it the binding does nothing. Install via `brew install lazygit`.
+- fd. Improves Telescope file search performance. Install via `brew install fd`.
+- make. Required to build some plugins that have a `build` step.
+
+**Verify your versions:**
+
+```sh
+nvim --version      # should be 0.11+
+node --version      # should be 18+
+go version          # should be 1.21+
+rg --version        # ripgrep
+gcc --version       # or clang --version
+```
+
+---
+
+## Installation
+
+**1. Back up your existing config if you have one:**
+
+```sh
+mv ~/.config/nvim ~/.config/nvim.bak
+mv ~/.local/share/nvim ~/.local/share/nvim.bak
+```
+
+**2. Clone this repo:**
+
+```sh
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO ~/.config/nvim
+```
+
+**3. Start Neovim:**
+
+```sh
+nvim
+```
+
+On first launch, lazy.nvim bootstraps itself and then installs all plugins. This takes a minute or two depending on your connection. You will see a progress UI. Let it finish completely before doing anything.
+
+**4. Let Mason install the tooling:**
+
+Mason tool installer runs automatically in the background after plugins load (it fires on the `VeryLazy` event). The first run installs every language server, formatter, and linter in one pass. You can watch the progress with `:Mason`.
+
+After the initial install, Mason checks for missing tools once per day on startup. If you add a new tool to the `ensure_installed` list in `lua/plugins/init.lua`, it will be installed the next time Neovim starts.
+
+**5. Restart Neovim:**
+
+After the initial install completes, restart Neovim once. Treesitter parsers and some LSP servers need a clean session to initialize correctly.
+
+**First launch checklist:**
+
+- Run `:checkhealth` to verify there are no critical issues
+- Open a `.go` file and confirm gopls attaches (`:LspInfo`)
+- Open a `.ts` or `.tsx` file inside a project and confirm ts_ls attaches
+- Run `:ConformInfo` in any buffer to verify the expected formatters show as ready
+
+---
+
 ## Languages and Tooling
 
 ### Go
@@ -30,7 +104,7 @@ go.nvim adds editor-level commands for common Go patterns: inserting `if err != 
 
 ### TypeScript / React
 
-ts_ls handles type checking, go-to-definition, auto-imports, and completions for TypeScript and JSX/TSX files. Inlay hints are enabled for parameter names (literals only) and function return types. Variable type hints are off since they add too much noise in React component code.
+vtsls handles type checking, go-to-definition, auto-imports, and completions for TypeScript and JSX/TSX files. It is a thin wrapper around the same `tsserver` used by VS Code, with lower memory overhead and better LSP feature parity than the older `typescript-language-server`. Inlay hints are enabled for parameter names (literals only) and function return types. Variable type hints are off since they add too much noise in React component code.
 
 Biome is the formatter and linter for projects that have a `biome.json` at the root. It runs as both an LSP (real-time diagnostics) and a formatter on save. For projects without Biome, Prettier handles formatting as a fallback. This means Go projects and other non-JS codebases are not affected by Biome at all.
 
@@ -78,21 +152,23 @@ YAML validation uses schemastore automatically. Prettier handles YAML formatting
 
 Trouble provides a workspace-level diagnostics panel that aggregates errors and warnings across all open files.
 
+The prefix is `<leader>X` (capital) to avoid colliding with NvChad's `<leader>x` "close buffer" mapping.
+
 | Key | Action |
 |---|---|
-| `<leader>xx` | Workspace diagnostics |
-| `<leader>xb` | Current buffer diagnostics |
-| `<leader>xs` | Symbols panel |
-| `<leader>xl` | Location list |
-| `<leader>xq` | Quickfix list |
+| `<leader>Xx` | Workspace diagnostics |
+| `<leader>Xb` | Current buffer diagnostics |
+| `<leader>Xs` | Symbols panel |
+| `<leader>Xl` | Location list |
+| `<leader>Xq` | Quickfix list |
 
-Direct LSP code actions are on `<leader>ca`. Peek definition and peek type definition are on `gpd` and `gpt` respectively via lspsaga.
+Direct LSP code actions are on `<leader>ca`. Peek definition and peek type definition are on `gpd` and `gpt` respectively via Glance.
 
 ---
 
 ## Git
 
-LazyGit opens in a floating terminal on `<leader>lg`. Git blame virtual text shows inline on each line showing the commit summary, date, author, and SHA. Gitsigns provides gutter indicators for added, changed, and removed lines.
+LazyGit opens in a floating terminal on `<leader>lg`. Gitsigns provides gutter indicators for added, changed, and removed lines, plus inline current-line blame at the end of each line (author, date, summary, SHA) after a 300ms cursor pause.
 
 ---
 
@@ -136,11 +212,45 @@ All formatters run on save with a 2000ms timeout. If no dedicated formatter is c
 
 ---
 
+## Configuration Layout
+
+```
+~/.config/nvim/
+├── init.lua                # bootstrap (lazy, base46 cache, version guard)
+├── lsp/                    # one file per LSP server (Neovim 0.11+ auto-loader)
+│   ├── gopls.lua
+│   ├── pyright.lua
+│   ├── vtsls.lua
+│   └── ...
+└── lua/
+    ├── chadrc.lua          # NvChad theme & UI overrides
+    ├── options.lua         # vim options
+    ├── mappings.lua        # all custom keybindings
+    ├── autocmds.lua        # filetype detection, inlay-hint LspAttach hook, etc.
+    ├── configs/
+    │   ├── lazy.lua        # lazy.nvim setup
+    │   ├── conform.lua     # formatters
+    │   ├── lint.lua        # nvim-lint linters
+    │   ├── dap.lua         # DAP UI layout + listeners
+    │   └── telescope.lua   # Telescope opts
+    └── plugins/
+        ├── init.lua        # imports the domain files below
+        ├── lsp.lua         # mason, lspconfig, schemastore, Glance
+        ├── completion.lua  # blink.cmp via NvChad's bundled spec
+        ├── treesitter.lua  # treesitter + treesitter-context
+        ├── editor.lua      # telescope, conform, nvim-lint, trouble
+        ├── git.lua         # lazygit, gitsigns inline blame
+        ├── dap.lua         # nvim-dap, dap-ui, dap-go, dap-python, dap-virtual-text
+        └── lang-go.lua     # ray-x/go.nvim (slimmed)
+```
+
+---
+
 ## Adding Support for a New Language
 
-1. Add the LSP server and any formatter / linter tools to the `ensure_installed` list in `lua/plugins/init.lua` under mason-tool-installer. They will auto-install on next startup.
-2. Add the LSP config block to `lua/configs/lspconfig.lua` and include the server name in the `vim.lsp.enable(servers)` list at the bottom.
+1. Add the LSP server and any formatter / linter tools to the `ensure_installed` list under mason-tool-installer in `lua/plugins/lsp.lua`. They will auto-install on next startup.
+2. Create `~/.config/nvim/lsp/<server_name>.lua` returning the server's config table, then add the server name to the `vim.lsp.enable {...}` list in `lua/plugins/lsp.lua`.
 3. Add the formatter to `lua/configs/conform.lua` under `formatters_by_ft`. If the formatter needs custom arguments, add a block under `formatters`.
-4. If the language needs a linter that runs outside the LSP, add it to the `lint.linters_by_ft` table in the nvim-lint plugin block in `lua/plugins/init.lua`.
-5. Add a treesitter parser to the `ensure_installed` list in the treesitter plugin block if one exists for the language.
+4. If the language needs a linter that runs outside the LSP, add it to `lint.linters_by_ft` in `lua/configs/lint.lua`.
+5. Add a treesitter parser to the `ensure_installed` list in `lua/plugins/treesitter.lua` if one exists for the language.
 6. If Neovim does not detect the filetype correctly (check with `:set ft?`), add the extension or filename to `vim.filetype.add` in `lua/autocmds.lua`.

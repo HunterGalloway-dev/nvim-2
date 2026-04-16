@@ -1,3 +1,8 @@
+if vim.fn.has "nvim-0.11" == 0 then
+  vim.api.nvim_err_writeln "This config requires Neovim 0.11+. Update Neovim before continuing."
+  return
+end
+
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/base46/"
 vim.g.mapleader = " "
 
