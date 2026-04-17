@@ -15,6 +15,7 @@ These need to be installed on your system before the config will work correctly.
 - Neovim 0.11 or later. This config uses `vim.lsp.config` and `vim.lsp.enable` which are 0.11-only APIs. Earlier versions will not work.
 - Git. Required for lazy.nvim to bootstrap itself and download plugins.
 - A C compiler (gcc or clang). Treesitter compiles parsers from source on first install.
+- The `tree-sitter` CLI. Required by the `main` branch of nvim-treesitter to generate and build parsers — Homebrew's `tree-sitter` formula installs only the library, so install the CLI separately via `bun add -g tree-sitter-cli` (or `npm install -g tree-sitter-cli` / `cargo install tree-sitter-cli`).
 - Node.js 18 or later. A large number of Mason packages are Node-based: the TypeScript LSP, JSON LSP, YAML LSP, HTML LSP, CSS LSP, Dockerfile LSP, Emmet, and others.
 - Go 1.21 or later. Required for gopls, gofumpt, goimports, go.nvim, and Delve.
 - ripgrep. Required for Telescope live grep. Install via `brew install ripgrep` or your system package manager.
@@ -29,11 +30,12 @@ These need to be installed on your system before the config will work correctly.
 **Verify your versions:**
 
 ```sh
-nvim --version      # should be 0.11+
-node --version      # should be 18+
-go version          # should be 1.21+
-rg --version        # ripgrep
-gcc --version       # or clang --version
+nvim --version          # should be 0.11+
+node --version          # should be 18+
+go version              # should be 1.21+
+rg --version            # ripgrep
+gcc --version           # or clang --version
+tree-sitter --version   # tree-sitter CLI (for nvim-treesitter main branch)
 ```
 
 ---
@@ -252,5 +254,5 @@ All formatters run on save with a 2000ms timeout. If no dedicated formatter is c
 2. Create `~/.config/nvim/lsp/<server_name>.lua` returning the server's config table, then add the server name to the `vim.lsp.enable {...}` list in `lua/plugins/lsp.lua`.
 3. Add the formatter to `lua/configs/conform.lua` under `formatters_by_ft`. If the formatter needs custom arguments, add a block under `formatters`.
 4. If the language needs a linter that runs outside the LSP, add it to `lint.linters_by_ft` in `lua/configs/lint.lua`.
-5. Add a treesitter parser to the `ensure_installed` list in `lua/plugins/treesitter.lua` if one exists for the language.
+5. Add a treesitter parser to the `require("nvim-treesitter").install({...})` list in `lua/plugins/treesitter.lua` if one exists for the language.
 6. If Neovim does not detect the filetype correctly (check with `:set ft?`), add the extension or filename to `vim.filetype.add` in `lua/autocmds.lua`.

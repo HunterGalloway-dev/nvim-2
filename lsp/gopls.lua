@@ -16,11 +16,10 @@ return {
             -- in files that aren't currently transitively reachable.
             diagnosticsTrigger = "Edit",
             diagnosticsDelay = "250ms",
-            -- Completions: pull from packages you haven't imported yet, drop
-            -- argument placeholders into function calls, and offer postfix
-            -- completions like `x.if` -> `if x { ... }`.
+            -- Completions: pull from packages you haven't imported yet, and offer
+            -- postfix completions like `x.if` -> `if x { ... }`.
             completeUnimported = true,
-            usePlaceholders = true,
+            usePlaceholders = false,
             experimentalPostfixCompletions = true,
             -- Scan module dependencies for known CVEs against the Go vuln DB.
             -- "Imports" is the lighter mode (compare to "Off" or full "Lazy").

@@ -13,9 +13,11 @@ o.expandtab = true
 o.number = true
 o.relativenumber = true
 
--- Folding (Treesitter-based)
+-- Folding (Treesitter-based). Uses Neovim's built-in foldexpr — the old
+-- `nvim_treesitter#foldexpr()` is a master-branch Vim global that doesn't
+-- exist on the `main` branch.
 o.foldmethod = "expr"
-o.foldexpr = "nvim_treesitter#foldexpr()"
+o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 o.foldenable = true
 o.foldlevel = 99           -- Keeps folds open by default
 o.foldlevelstart = 99
